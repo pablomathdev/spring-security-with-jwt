@@ -1,13 +1,19 @@
 package com.github.pablomathdev.login.Entities;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -22,30 +28,38 @@ public class User {
 	@Column(unique = true)
 	private Integer cpf;
 	
+	@Column(unique = true)
 	private Integer rg;
 	
 	private String firstName;
 	
-	private String LastName;
+	private String lastName;
 	
+	@Column(unique = true)
 	private String email;
 	
-	private Integer phone;
+	private String phone;
 	
 	private LocalDate birthDate;
 	
 	private String password;
 
+    
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(name = "tb_user_role",
+	joinColumns = @JoinColumn(name = "user_id"),
+	inverseJoinColumns = @JoinColumn(name = "role_id"))
+	private Set<Role> roles = new HashSet<>();
+	
 
-
-	public User(Long id, Integer cpf, Integer rg, String firstName, String lastName, String email, Integer phone,
+	public User(Long id, Integer cpf, Integer rg, String firstName, String lastName, String email, String phone,
 			LocalDate birthDate, String password) {
 		super();
 		this.id = id;
 		this.cpf = cpf;
 		this.rg = rg;
 		this.firstName = firstName;
-		LastName = lastName;
+		this.lastName = lastName;
 		this.email = email;
 		this.phone = phone;
 		this.birthDate = birthDate;
@@ -69,11 +83,11 @@ public class User {
 	}
 
 	public String getLastName() {
-		return LastName;
+		return lastName;
 	}
 
 	public void setLastName(String lastName) {
-		LastName = lastName;
+		this.lastName = lastName;
 	}
 
 	public String getEmail() {
@@ -84,11 +98,11 @@ public class User {
 		this.email = email;
 	}
 
-	public Integer getPhone() {
+	public String getPhone() {
 		return phone;
 	}
 
-	public void setPhone(Integer phone) {
+	public void setPhone(String phone) {
 		this.phone = phone;
 	}
 
@@ -139,6 +153,10 @@ public class User {
 
 	public void setRg(Integer rg) {
 		this.rg = rg;
+	}
+
+	public Set<Role> getRoles() {
+		return roles;
 	}
 
 	
