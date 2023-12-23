@@ -57,6 +57,8 @@ public class User implements UserDetails{
 	inverseJoinColumns = @JoinColumn(name = "role_id"))
 	private Set<Role> roles = new HashSet<>();
 	
+	
+	public User() {}
 
 	public User(Long id, Integer cpf, Integer rg, String firstName, String lastName, String email, String phone,
 			LocalDate birthDate, String password) {
