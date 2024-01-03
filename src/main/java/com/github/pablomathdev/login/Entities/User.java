@@ -22,45 +22,41 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "tb_user")
-public class User implements UserDetails{
+public class User implements UserDetails {
 
-	
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@Column(unique = true)
-	private Integer cpf;
-	
+	private String cpf;
+
 	@Column(unique = true)
-	private Integer rg;
-	
+	private String rg;
+
 	private String firstName;
-	
+
 	private String lastName;
-	
+
 	@Column(unique = true)
 	private String email;
-	
+
 	private String phone;
-	
+
 	private LocalDate birthDate;
-	
+
 	private String password;
 
-    
 	@ManyToMany(fetch = FetchType.EAGER)
-	@JoinTable(name = "tb_user_role",
-	joinColumns = @JoinColumn(name = "user_id"),
-	inverseJoinColumns = @JoinColumn(name = "role_id"))
+	@JoinTable(name = "tb_user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
 	private Set<Role> roles = new HashSet<>();
-	
-	
-	public User() {}
 
-	public User(Long id, Integer cpf, Integer rg, String firstName, String lastName, String email, String phone,
+	public User() {
+	}
+
+	public User(Long id, String cpf, String rg, String firstName, String lastName, String email, String phone,
 			LocalDate birthDate, String password) {
 		super();
 		this.id = id;
@@ -147,19 +143,19 @@ public class User implements UserDetails{
 		return Objects.equals(id, other.id);
 	}
 
-	public Integer getCpf() {
+	public String getCpf() {
 		return cpf;
 	}
 
-	public void setCpf(Integer cpf) {
+	public void setCpf(String cpf) {
 		this.cpf = cpf;
 	}
 
-	public Integer getRg() {
+	public String getRg() {
 		return rg;
 	}
 
-	public void setRg(Integer rg) {
+	public void setRg(String rg) {
 		this.rg = rg;
 	}
 
@@ -197,5 +193,4 @@ public class User implements UserDetails{
 		return true;
 	}
 
-	
 }
