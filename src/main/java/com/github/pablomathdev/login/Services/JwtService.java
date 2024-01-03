@@ -1,5 +1,10 @@
 package com.github.pablomathdev.login.Services;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.util.Date;
+
 import javax.crypto.SecretKey;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -18,9 +23,6 @@ public class JwtService {
 	@Value("${jwt.secret.key}")
 	public String secret;
 	
-	@Value("${jwt.duration}")
-	public String duration;
-	
 	 private SecretKey getSigningKey() {
 		  byte[] keyBytes = secret.getBytes();
 		  return Keys.hmacShaKeyFor(keyBytes);
@@ -38,6 +40,7 @@ public class JwtService {
 				.subject(user.getId().toString())
 				  .claim("name", String.format("%s %s",user.getFirstName(),user.getLastName()))
 				  .claim("email",user.getEmail())
+				  .expiration(generateExpDate())
 				  .signWith(getSigningKey(),Jwts.SIG.HS256)
 				  .compact();
 		 
@@ -45,5 +48,10 @@ public class JwtService {
 		 
 	}
 	
+	private Date generateExpDate() {
+	  Instant exp = LocalDateTime.now().plusHours(1).toInstant(ZoneOffset.of("Z"));
+		
+		return Date.from(exp);
+	}
 	
 }
