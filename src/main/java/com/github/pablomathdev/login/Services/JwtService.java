@@ -8,10 +8,12 @@ import java.util.Date;
 import javax.crypto.SecretKey;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.oauth2.jwt.JwtValidationException;
 import org.springframework.stereotype.Service;
 
 import com.github.pablomathdev.login.Entities.User;
 
+import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 
@@ -27,6 +29,25 @@ public class JwtService {
 		  byte[] keyBytes = secret.getBytes();
 		  return Keys.hmacShaKeyFor(keyBytes);
 		}
+	 
+	 
+	public String validateToken(String token) {
+		
+		String jwt;
+		
+		try {
+			 jwt = Jwts.parser()
+						.verifyWith(getSigningKey()).build().parseSignedClaims(token).getPayload().getSubject();
+				 
+				return jwt;
+			
+		} catch (JwtValidationException e) {
+			return "";
+		}
+		
+		
+	
+	}
 	 
 	 
 	
