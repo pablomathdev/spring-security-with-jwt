@@ -1,49 +1,69 @@
 package com.github.pablomathdev.login.Entities;
 
 import java.time.LocalDate;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "tb_user")
-public class User {
+public class User implements UserDetails {
 
-	
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
-	private Integer cpf;
-	
-	private Integer rg;
-	
+
+	@Column(unique = true)
+	private String cpf;
+
+	@Column(unique = true)
+	private String rg;
+
 	private String firstName;
-	
-	private String LastName;
-	
+
+	private String lastName;
+
+	@Column(unique = true)
 	private String email;
-	
-	private Integer phone;
-	
+
+	private String phone;
+
 	private LocalDate birthDate;
-	
+
 	private String password;
 
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(name = "tb_user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+	private Set<Role> roles = new HashSet<>();
 
+	public User() {
+	}
 
-	public User(Long id, Integer cpf, Integer rg, String firstName, String lastName, String email, Integer phone,
+	public User(Long id, String cpf, String rg, String firstName, String lastName, String email, String phone,
 			LocalDate birthDate, String password) {
 		super();
 		this.id = id;
 		this.cpf = cpf;
 		this.rg = rg;
 		this.firstName = firstName;
-		LastName = lastName;
+		this.lastName = lastName;
 		this.email = email;
 		this.phone = phone;
 		this.birthDate = birthDate;
@@ -67,11 +87,11 @@ public class User {
 	}
 
 	public String getLastName() {
-		return LastName;
+		return lastName;
 	}
 
 	public void setLastName(String lastName) {
-		LastName = lastName;
+		this.lastName = lastName;
 	}
 
 	public String getEmail() {
@@ -82,11 +102,11 @@ public class User {
 		this.email = email;
 	}
 
-	public Integer getPhone() {
+	public String getPhone() {
 		return phone;
 	}
 
-	public void setPhone(Integer phone) {
+	public void setPhone(String phone) {
 		this.phone = phone;
 	}
 
@@ -123,21 +143,70 @@ public class User {
 		return Objects.equals(id, other.id);
 	}
 
-	public Integer getCpf() {
+	public String getCpf() {
 		return cpf;
 	}
 
-	public void setCpf(Integer cpf) {
+	public void setCpf(String cpf) {
 		this.cpf = cpf;
 	}
 
-	public Integer getRg() {
+	public String getRg() {
 		return rg;
 	}
 
-	public void setRg(Integer rg) {
+	public void setRg(String rg) {
 		this.rg = rg;
 	}
 
+	public Set<Role> getRoles() {
+		return roles;
+	}
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return roles;
+	}
 	
+	public void addRole(Role role) {
+		roles.add(role);
+	}
+	
+	public boolean hasRole(String roleName) {
+		for(Role role : roles) {
+			if(role.getAuthority().equals(roleName)) {
+				return true;
+			}
+			
+		}
+		return false;
+	}
+	
+	
+
+	@Override
+	public String getUsername() {
+		return email;
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return true;
+	}
+
 }
