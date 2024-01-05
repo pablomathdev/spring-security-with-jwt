@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.github.pablomathdev.login.Entities.User;
-import com.github.pablomathdev.login.RepresentationModel.UserLoginModel;
+import com.github.pablomathdev.login.Models.UserSignUpDTO;
 import com.github.pablomathdev.login.Services.UserService;
 
 @RestController
@@ -28,7 +28,7 @@ public class UserController {
 	}
 	
 	@GetMapping(value = "/users")
-	private void signUp(@RequestBody UserLoginModel userLoginModel) {
+	private void signUp(@RequestBody UserSignUpDTO userLoginModel) {
 		
 		userService.loadUserByUsername(userLoginModel.getEmail());
 		

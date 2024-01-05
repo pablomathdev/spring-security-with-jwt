@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import com.github.pablomathdev.login.Entities.User;
 
-import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 

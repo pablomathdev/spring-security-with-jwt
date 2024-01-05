@@ -1,8 +1,8 @@
-package com.github.pablomathdev.login.RepresentationModel;
+package com.github.pablomathdev.login.Models;
 
 
 
-public class UserLoginModel {
+public class UserSignUpDTO {
 
 	private String email;
 	

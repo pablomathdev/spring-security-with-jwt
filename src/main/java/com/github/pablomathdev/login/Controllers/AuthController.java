@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.github.pablomathdev.login.Entities.User;
+import com.github.pablomathdev.login.Models.UserSignUpDTO;
 import com.github.pablomathdev.login.Repositories.UserRepository;
-import com.github.pablomathdev.login.RepresentationModel.UserLoginModel;
 import com.github.pablomathdev.login.Services.JwtService;
 
 @RestController
@@ -31,9 +31,9 @@ public class AuthController {
 	private JwtService jwtService;
 
 	@PostMapping("/signin")
-	public ResponseEntity<?> signup(@RequestBody UserLoginModel loginModel) {
+	public ResponseEntity<?> signIn(@RequestBody UserSignUpDTO user) {
 
-		var userPassword = new UsernamePasswordAuthenticationToken(loginModel.getEmail(), loginModel.getPassword());
+		var userPassword = new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword());
 
 		var auth = this.authenticationManager.authenticate(userPassword);
 		
@@ -43,7 +43,7 @@ public class AuthController {
 	}
 
 	@PostMapping("/signup")
-	public ResponseEntity<?> signin(@RequestBody User user) {
+	public ResponseEntity<?> signUp(@RequestBody User user) {
 
 	  User alreadyExists = userRepository.findByEmail(user.getEmail());
 	  
