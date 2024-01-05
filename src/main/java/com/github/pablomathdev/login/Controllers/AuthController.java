@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.github.pablomathdev.login.Entities.User;
+import com.github.pablomathdev.login.Models.UserSignInDTO;
 import com.github.pablomathdev.login.Models.UserSignUpDTO;
 import com.github.pablomathdev.login.Repositories.UserRepository;
 import com.github.pablomathdev.login.Services.JwtService;
@@ -33,7 +34,9 @@ public class AuthController {
 	@PostMapping("/signin")
 	public ResponseEntity<?> signIn(@RequestBody UserSignUpDTO user) {
 
-		var userPassword = new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword());
+		var userPassword = new UsernamePasswordAuthenticationToken(
+				user.getEmail(),
+				user.getPassword());
 
 		var auth = this.authenticationManager.authenticate(userPassword);
 		
@@ -43,7 +46,7 @@ public class AuthController {
 	}
 
 	@PostMapping("/signup")
-	public ResponseEntity<?> signUp(@RequestBody User user) {
+	public ResponseEntity<?> signUp(@RequestBody UserSignInDTO user) {
 
 	  User alreadyExists = userRepository.findByEmail(user.getEmail());
 	  
@@ -51,11 +54,16 @@ public class AuthController {
 		  return ResponseEntity.badRequest().build();
 	  }
 		
-	  String encryptedpassword = new BCryptPasswordEncoder().encode(user.getPassword());
+	  String encryptedpassword = new BCryptPasswordEncoder()
+			  .encode(user.getPassword());
 	  
 	   user.setPassword(encryptedpassword); 
 	   
-	   userRepository.save(user);
+	   User newUser = new User();
+	   newUser.setEmail(user.getEmail());
+	   newUser.setPassword(user.getPassword());
+	   
+	   userRepository.save(newUser);
 	   
 	   
 	   return ResponseEntity.ok().build();

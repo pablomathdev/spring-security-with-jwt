@@ -2,7 +2,7 @@ package com.github.pablomathdev.login.Models;
 
 
 
-public class UserSignUpDTO {
+public class UserSignInDTO {
 
 	private String email;
 	
@@ -23,6 +23,6 @@ public class UserSignUpDTO {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-
-	
+    
+    
 }
