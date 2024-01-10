@@ -5,6 +5,10 @@ import java.util.Set;
 import com.github.pablomathdev.login.Entities.Role;
 
 public class UserSignUpDTO {
+	
+	private String firstName;
+	
+	private String lastName;
 
 	private String email;
 	
@@ -34,6 +38,22 @@ public class UserSignUpDTO {
 
 	public void setRoles(Set<Role> roles) {
 		this.roles = roles;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
 	}
 
 	
