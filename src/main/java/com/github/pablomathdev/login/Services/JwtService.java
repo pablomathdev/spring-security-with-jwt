@@ -59,7 +59,7 @@ public class JwtService {
 				.and()
 				.subject(user.getId().toString())
 				  .claim("name", String.format("%s %s",user.getFirstName(),user.getLastName()))
-				  .claim("email",user.getEmail())
+				  .claim("email",user.getUsername())
 				  .expiration(generateExpDate())
 				  .signWith(getSigningKey(),Jwts.SIG.HS256)
 				  .compact();

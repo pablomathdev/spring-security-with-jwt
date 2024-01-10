@@ -6,5 +6,5 @@ import com.github.pablomathdev.login.Entities.User;
 
 public interface UserRepository extends JpaRepository<User,Long>{
 	
-	User findByEmail(String email);
+	User findByUsername(String email);
 }

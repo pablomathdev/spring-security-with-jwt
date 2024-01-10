@@ -24,11 +24,6 @@ public class Role implements GrantedAuthority{
 	
 	private String authority;
 
-	public Role(Long id, String authority) {
-		super();
-		this.id = id;
-		this.authority = authority;
-	}
 
 	public Long getId() {
 		return id;
