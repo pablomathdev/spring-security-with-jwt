@@ -7,8 +7,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.github.pablomathdev.login.Entities.User;
-import com.github.pablomathdev.login.Repositories.UserRepository;
+import com.github.pablomathdev.login.Domain.Entities.User;
+import com.github.pablomathdev.login.infra.Repositories.UserRepository;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -36,7 +36,7 @@ public class UserService implements UserDetailsService {
 	@Override
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
-		User user = repository.findByEmail(email);
+		User user = repository.findByUsername(email);
 
 		if (user == null) {
 			throw new UsernameNotFoundException("Email not found");

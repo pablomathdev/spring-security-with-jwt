@@ -3,8 +3,6 @@ package com.github.pablomathdev.login.Controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,52 +10,58 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.github.pablomathdev.login.Entities.User;
+import com.github.pablomathdev.login.Domain.Entities.User;
 import com.github.pablomathdev.login.Models.ResponseTokenDTO;
 import com.github.pablomathdev.login.Models.UserSignInDTO;
 import com.github.pablomathdev.login.Models.UserSignUpDTO;
-import com.github.pablomathdev.login.Repositories.UserRepository;
-import com.github.pablomathdev.login.Services.JwtService;
+import com.github.pablomathdev.login.Services.AuthUserService;
+import com.github.pablomathdev.login.infra.Mapper.UserSignInMapper;
+import com.github.pablomathdev.login.infra.Repositories.UserRepository;
 
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
-
-	@Autowired
+	
+	
 	private UserRepository userRepository;
 	
+	private AuthUserService authUserService;
 	
-	@Autowired
-	private AuthenticationManager authenticationManager;
+	private UserSignInMapper userSignInMapper;
+
+
+	public AuthController(
+			@Autowired AuthUserService authUserService,
+			@Autowired UserRepository userRepository,
+			@Autowired UserSignInMapper userSignInMapper)
+	{
+		this.authUserService = authUserService;
+		this.userRepository = userRepository;
+		this.userSignInMapper = userSignInMapper;
+	}
 	
 	
-	@Autowired
-	private JwtService jwtService;
 
 	@PostMapping("/signin")
 	@ResponseStatus(value = HttpStatus.OK)
-	public ResponseTokenDTO signIn(@RequestBody UserSignUpDTO user) {
+	public ResponseTokenDTO signIn(@RequestBody UserSignInDTO userSignInDTO) {
 
-		var userPassword = new UsernamePasswordAuthenticationToken(
-				user.getEmail(),
-				user.getPassword());
-
-		var auth = this.authenticationManager.authenticate(userPassword);
+		User dtoToUser = userSignInMapper.userToUserSignInDto(userSignInDTO);
 		
-		var token = jwtService.generateToken((User) auth.getPrincipal());
+		String token = authUserService.authenticateUser(dtoToUser);
 
-		
 		
 		ResponseTokenDTO responseTokenDTO = new ResponseTokenDTO();
 		responseTokenDTO.setToken(token);
+		
 		
 		return responseTokenDTO;
 	}
 
 	@PostMapping("/signup")
-	public ResponseEntity<?> signUp(@RequestBody UserSignInDTO user) {
+	public ResponseEntity<?> signUp(@RequestBody UserSignUpDTO user) {
 
-	  User alreadyExists = userRepository.findByEmail(user.getEmail());
+	  User alreadyExists = userRepository.findByUsername(user.getEmail());
 	  
 	  if(alreadyExists != null) {
 		  return ResponseEntity.badRequest().build();
@@ -69,9 +73,11 @@ public class AuthController {
 	   user.setPassword(encryptedpassword); 
 	   
 	   User newUser = new User();
-	   newUser.setEmail(user.getEmail());
+	   newUser.setUsername(user.getEmail());
 	   newUser.setPassword(user.getPassword());
-	   
+	   newUser.setFirstName(user.getFirstName());
+	   newUser.setLastName(user.getLastName());
+	   newUser.setRoles(user.getRoles());   
 	   userRepository.save(newUser);
 	   
 	   

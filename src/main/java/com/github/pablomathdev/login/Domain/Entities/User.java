@@ -1,4 +1,4 @@
-package com.github.pablomathdev.login.Entities;
+package com.github.pablomathdev.login.Domain.Entities;
 
 import java.time.LocalDate;
 import java.util.Collection;
@@ -41,7 +41,12 @@ public class User implements UserDetails {
 	private String lastName;
 
 	@Column(unique = true)
-	private String email;
+	private String username;
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
 
 	private String phone;
 
@@ -56,19 +61,6 @@ public class User implements UserDetails {
 	public User() {
 	}
 
-	public User(Long id, String cpf, String rg, String firstName, String lastName, String email, String phone,
-			LocalDate birthDate, String password) {
-		super();
-		this.id = id;
-		this.cpf = cpf;
-		this.rg = rg;
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.email = email;
-		this.phone = phone;
-		this.birthDate = birthDate;
-		this.password = password;
-	}
 
 	public Long getId() {
 		return id;
@@ -94,14 +86,7 @@ public class User implements UserDetails {
 		this.lastName = lastName;
 	}
 
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
+	
 	public String getPhone() {
 		return phone;
 	}
@@ -159,6 +144,11 @@ public class User implements UserDetails {
 		this.rg = rg;
 	}
 
+	public void setRoles(Set<Role> roles) {
+		this.roles = roles;
+	}
+
+
 	public Set<Role> getRoles() {
 		return roles;
 	}
@@ -184,10 +174,7 @@ public class User implements UserDetails {
 	
 	
 
-	@Override
-	public String getUsername() {
-		return email;
-	}
+	
 
 	@Override
 	public boolean isAccountNonExpired() {
@@ -207,6 +194,12 @@ public class User implements UserDetails {
 	@Override
 	public boolean isEnabled() {
 		return true;
+	}
+
+
+	@Override
+	public String getUsername() {
+		 return username;
 	}
 
 }
