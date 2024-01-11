@@ -1,4 +1,4 @@
-package com.github.pablomathdev.login.Entities;
+package com.github.pablomathdev.login.Domain.Entities;
 
 import java.time.LocalDate;
 import java.util.Collection;

@@ -10,13 +10,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.github.pablomathdev.login.Config.UserSignInMapper;
-import com.github.pablomathdev.login.Entities.User;
+import com.github.pablomathdev.login.Domain.Entities.User;
 import com.github.pablomathdev.login.Models.ResponseTokenDTO;
 import com.github.pablomathdev.login.Models.UserSignInDTO;
 import com.github.pablomathdev.login.Models.UserSignUpDTO;
-import com.github.pablomathdev.login.Repositories.UserRepository;
 import com.github.pablomathdev.login.Services.AuthUserService;
+import com.github.pablomathdev.login.infra.Mapper.UserSignInMapper;
+import com.github.pablomathdev.login.infra.Repositories.UserRepository;
 
 @RestController
 @RequestMapping("/auth")
@@ -50,7 +50,6 @@ public class AuthController {
 		
 		String token = authUserService.authenticateUser(dtoToUser);
 
-		
 		
 		ResponseTokenDTO responseTokenDTO = new ResponseTokenDTO();
 		responseTokenDTO.setToken(token);

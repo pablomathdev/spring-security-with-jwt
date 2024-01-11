@@ -1,10 +1,10 @@
-package com.github.pablomathdev.login.Config;
+package com.github.pablomathdev.login.infra.Mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.springframework.stereotype.Component;
 
-import com.github.pablomathdev.login.Entities.User;
+import com.github.pablomathdev.login.Domain.Entities.User;
 import com.github.pablomathdev.login.Models.UserSignInDTO;
 
 @Component

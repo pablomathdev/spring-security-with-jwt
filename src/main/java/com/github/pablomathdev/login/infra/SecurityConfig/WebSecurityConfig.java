@@ -1,4 +1,4 @@
-package com.github.pablomathdev.login.Config;
+package com.github.pablomathdev.login.infra.SecurityConfig;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

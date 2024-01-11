@@ -2,12 +2,13 @@ package com.github.pablomathdev.login.Services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Service;
 
-import com.github.pablomathdev.login.Entities.User;
+import com.github.pablomathdev.login.Domain.Entities.User;
 
 
 @Service
@@ -41,9 +42,8 @@ public class AuthUserService {
 			return token;
 		} catch (AuthenticationException e) {
 			
-			e.printStackTrace();
+			throw new BadCredentialsException(e.getMessage(),e.getCause());
 			
-			return null;
 		}
 		
 

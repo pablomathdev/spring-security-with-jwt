@@ -2,7 +2,7 @@ package com.github.pablomathdev.login.Models;
 
 import java.util.Set;
 
-import com.github.pablomathdev.login.Entities.Role;
+import com.github.pablomathdev.login.Domain.Entities.Role;
 
 public class UserSignUpDTO {
 	

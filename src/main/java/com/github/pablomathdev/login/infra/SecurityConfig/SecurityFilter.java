@@ -1,4 +1,4 @@
-package com.github.pablomathdev.login.Config;
+package com.github.pablomathdev.login.infra.SecurityConfig;
 
 import java.io.IOException;
 
@@ -9,8 +9,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.github.pablomathdev.login.Repositories.UserRepository;
 import com.github.pablomathdev.login.Services.JwtService;
+import com.github.pablomathdev.login.infra.Repositories.UserRepository;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
