@@ -51,11 +51,8 @@ public class AuthController {
 		String token = authUserService.authenticateUser(dtoToUser);
 
 		
-		ResponseTokenDTO responseTokenDTO = new ResponseTokenDTO();
-		responseTokenDTO.setToken(token);
+		return ResponseTokenDTO.builder().token(token).build();
 		
-		
-		return responseTokenDTO;
 	}
 
 	@PostMapping("/signup")
