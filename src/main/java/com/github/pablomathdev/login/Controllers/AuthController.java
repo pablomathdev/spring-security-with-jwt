@@ -54,15 +54,14 @@ public class AuthController {
 
 	@PostMapping("/signup")
 	public ResponseEntity<?> signUp(@RequestBody UserSignUpDTO user) {
-		
-			userRepository.alreadyExists(user.getEmail());
 
-			User dtoToUser = userSignUpMapper.userToUserSignUpDto(user);
+		userRepository.alreadyExists(user.getEmail());
 
-			userService.createUser(dtoToUser);
+		User dtoToUser = userSignUpMapper.userToUserSignUpDto(user);
 
-			return ResponseEntity.ok().build();
+		userService.createUser(dtoToUser);
 
-		
+		return ResponseEntity.ok().build();
+
 	}
 }
