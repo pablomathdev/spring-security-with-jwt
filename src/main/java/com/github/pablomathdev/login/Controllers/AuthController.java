@@ -3,7 +3,6 @@ package com.github.pablomathdev.login.Controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,74 +10,67 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.github.pablomathdev.login.Domain.Entities.User;
+import com.github.pablomathdev.login.Exceptions.UserAlreadyExistsException;
 import com.github.pablomathdev.login.Models.ResponseTokenDTO;
 import com.github.pablomathdev.login.Models.UserSignInDTO;
 import com.github.pablomathdev.login.Models.UserSignUpDTO;
 import com.github.pablomathdev.login.Services.AuthUserService;
+import com.github.pablomathdev.login.Services.UserService;
 import com.github.pablomathdev.login.infra.Mapper.UserSignInMapper;
+import com.github.pablomathdev.login.infra.Mapper.UserSignUpMapper;
 import com.github.pablomathdev.login.infra.Repositories.UserRepository;
 
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
-	
-	
+
 	private UserRepository userRepository;
-	
+
 	private AuthUserService authUserService;
-	
+
 	private UserSignInMapper userSignInMapper;
 
+	private UserSignUpMapper userSignUpMapper;
 
-	public AuthController(
-			@Autowired AuthUserService authUserService,
-			@Autowired UserRepository userRepository,
-			@Autowired UserSignInMapper userSignInMapper)
-	{
+	private UserService userService;
+
+	public AuthController(@Autowired AuthUserService authUserService, @Autowired UserRepository userRepository,
+			@Autowired UserSignInMapper userSignInMapper, @Autowired UserSignUpMapper userSignUpMapper,
+			@Autowired UserService userService) {
 		this.authUserService = authUserService;
 		this.userRepository = userRepository;
 		this.userSignInMapper = userSignInMapper;
+		this.userSignUpMapper = userSignUpMapper;
+		this.userService = userService;
 	}
-	
-	
 
 	@PostMapping("/signin")
 	@ResponseStatus(value = HttpStatus.OK)
 	public ResponseTokenDTO signIn(@RequestBody UserSignInDTO userSignInDTO) {
 
 		User dtoToUser = userSignInMapper.userToUserSignInDto(userSignInDTO);
-		
+
 		String token = authUserService.authenticateUser(dtoToUser);
 
-		
 		return ResponseTokenDTO.builder().token(token).build();
-		
+
 	}
 
 	@PostMapping("/signup")
 	public ResponseEntity<?> signUp(@RequestBody UserSignUpDTO user) {
 
-	  User alreadyExists = userRepository.findByUsername(user.getEmail());
-	  
-	  if(alreadyExists != null) {
-		  return ResponseEntity.badRequest().build();
-	  }
-		
-	  String encryptedpassword = new BCryptPasswordEncoder()
-			  .encode(user.getPassword());
-	  
-	   user.setPassword(encryptedpassword); 
-	   
-	   User newUser = new User();
-	   newUser.setUsername(user.getEmail());
-	   newUser.setPassword(user.getPassword());
-	   newUser.setFirstName(user.getFirstName());
-	   newUser.setLastName(user.getLastName());
-	   newUser.setRoles(user.getRoles());   
-	   userRepository.save(newUser);
-	   
-	   
-	   return ResponseEntity.ok().build();
-	  
+		User findUser = userRepository.findByUsername(user.getEmail());
+
+		if (findUser != null) {
+			throw new UserAlreadyExistsException("User already exists.");
+		}
+
+		User dtoToUser = userSignUpMapper.userToUserSignUpDto(user);
+
+		userService.createUser(dtoToUser);
+
+		return ResponseEntity.ok().build();
+
+
 	}
 }

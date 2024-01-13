@@ -47,7 +47,6 @@ public class User implements UserDetails {
 		this.username = username;
 	}
 
-
 	private String phone;
 
 	private LocalDate birthDate;
@@ -60,7 +59,6 @@ public class User implements UserDetails {
 
 	public User() {
 	}
-
 
 	public Long getId() {
 		return id;
@@ -86,7 +84,6 @@ public class User implements UserDetails {
 		this.lastName = lastName;
 	}
 
-	
 	public String getPhone() {
 		return phone;
 	}
@@ -148,33 +145,31 @@ public class User implements UserDetails {
 		this.roles = roles;
 	}
 
-
 	public Set<Role> getRoles() {
 		return roles;
 	}
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
+		
 		return roles;
+		
 	}
-	
+
 	public void addRole(Role role) {
 		roles.add(role);
 	}
-	
+
 	public boolean hasRole(String roleName) {
-		for(Role role : roles) {
-			if(role.getAuthority().equals(roleName)) {
+		for (Role role : roles) {
+			if (role.getAuthority().equals(roleName)) {
 				return true;
 			}
-			
+
 		}
 		return false;
 	}
-	
-	
 
-	
 
 	@Override
 	public boolean isAccountNonExpired() {
@@ -196,10 +191,9 @@ public class User implements UserDetails {
 		return true;
 	}
 
-
 	@Override
 	public String getUsername() {
-		 return username;
+		return username;
 	}
 
 }
