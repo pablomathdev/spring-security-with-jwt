@@ -1,16 +1,13 @@
 package com.github.pablomathdev.login.Controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.github.pablomathdev.login.Domain.Entities.User;
-import com.github.pablomathdev.login.Exceptions.UserAlreadyExistsException;
 import com.github.pablomathdev.login.Models.ResponseTokenDTO;
 import com.github.pablomathdev.login.Models.UserSignInDTO;
 import com.github.pablomathdev.login.Models.UserSignUpDTO;
@@ -45,7 +42,6 @@ public class AuthController {
 	}
 
 	@PostMapping("/signin")
-	@ResponseStatus(value = HttpStatus.OK)
 	public ResponseTokenDTO signIn(@RequestBody UserSignInDTO userSignInDTO) {
 
 		User dtoToUser = userSignInMapper.userToUserSignInDto(userSignInDTO);
@@ -58,19 +54,15 @@ public class AuthController {
 
 	@PostMapping("/signup")
 	public ResponseEntity<?> signUp(@RequestBody UserSignUpDTO user) {
+		
+			userRepository.alreadyExists(user.getEmail());
 
-		User findUser = userRepository.findByUsername(user.getEmail());
+			User dtoToUser = userSignUpMapper.userToUserSignUpDto(user);
 
-		if (findUser != null) {
-			throw new UserAlreadyExistsException("User already exists.");
-		}
+			userService.createUser(dtoToUser);
 
-		User dtoToUser = userSignUpMapper.userToUserSignUpDto(user);
+			return ResponseEntity.ok().build();
 
-		userService.createUser(dtoToUser);
-
-		return ResponseEntity.ok().build();
-
-
+		
 	}
 }

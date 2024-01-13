@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import com.github.pablomathdev.login.Exceptions.UserAlreadyExistsException;
+
 @RestControllerAdvice
 public class ExceptionHandlerController extends ResponseEntityExceptionHandler{
 
@@ -30,5 +32,17 @@ public class ExceptionHandlerController extends ResponseEntityExceptionHandler{
 		return new ResponseEntity<>(problemDetail,new HttpHeaders(),HttpStatus.UNAUTHORIZED);
 		
 	}
-	
+	@ExceptionHandler(UserAlreadyExistsException.class)
+	public ResponseEntity<Object> handleUserAlreadyExists(UserAlreadyExistsException ex,WebRequest request) {
+		
+		ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.getMessage());
+		problemDetail.setStatus(HttpStatus.BAD_REQUEST.value());
+		problemDetail.setDetail(ex.getMessage());
+		problemDetail.setProperty("timestamp", OffsetDateTime.now());
+		problemDetail.setProperty("message", "User with this email in use.");
+		
+		
+		return new ResponseEntity<>(problemDetail,new HttpHeaders(),HttpStatus.BAD_REQUEST);
+		
+	}
 }
