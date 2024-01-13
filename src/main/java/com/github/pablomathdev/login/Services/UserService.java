@@ -24,13 +24,15 @@ public class UserService implements UserDetailsService {
 		this.passwordEncoder = passwordEncoder;
 	}
 
-	public void createUser(User user) {
+	public Boolean createUser(User user) {
 		
-	  String password =	passwordEncoder.encode(user.getPassword());
+	  String encryptedPassword = passwordEncoder.encode(user.getPassword());
 		
-	   user.setPassword(password);
-	  
-		repository.save(user);
+	   user.setPassword(encryptedPassword);
+	   
+	   repository.save(user);
+		
+	   return true;
 	}
 
 	@Override
