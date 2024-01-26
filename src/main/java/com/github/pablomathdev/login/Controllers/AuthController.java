@@ -31,7 +31,9 @@ public class AuthController {
 
 	private UserService userService;
 
-	public AuthController(@Autowired AuthUserService authUserService, @Autowired UserRepository userRepository,
+	public AuthController(
+			
+			@Autowired AuthUserService authUserService, @Autowired UserRepository userRepository,
 			@Autowired UserSignInMapper userSignInMapper, @Autowired UserSignUpMapper userSignUpMapper,
 			@Autowired UserService userService) {
 		this.authUserService = authUserService;

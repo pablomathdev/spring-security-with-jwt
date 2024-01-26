@@ -16,62 +16,53 @@ import com.github.pablomathdev.login.Domain.Entities.User;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 
-
 @Service
 public class JwtService {
 
-
 	@Value("${jwt.secret.key}")
 	public String secret;
-	
-	 private SecretKey getSigningKey() {
-		  byte[] keyBytes = secret.getBytes();
-		  return Keys.hmacShaKeyFor(keyBytes);
-		}
-	 
-	 
+
+	private SecretKey getSigningKey() {
+		byte[] keyBytes = secret.getBytes();
+		return Keys.hmacShaKeyFor(keyBytes);
+	}
+
 	public String validateToken(String token) {
-		
-		String jwt;
-		
+
 		try {
-			 jwt = Jwts.parser()
-						.verifyWith(getSigningKey()).build().parseSignedClaims(token).getPayload().getSubject();
-				 
-				return jwt;
+			return Jwts.parser()
+					.verifyWith(getSigningKey())
+					.build()
+					.parseSignedClaims(token.replace(" ", ""))
+					.getPayload()
+					.getSubject();
+
+			
 			
 		} catch (JwtValidationException e) {
 			return "";
 		}
-		
-		
-	
+
 	}
-	 
-	 
-	
+
 	public String generateToken(User user) {
-		
-		 String jwt = Jwts.builder()
-				.header()
-				  .add("alg", "HS256")
-				  .add("typ","JWT")
-				.and()
+
+		String jwt = Jwts.builder().header().add("alg", "HS256").add("typ", "JWT").and().issuer("api")
 				.subject(user.getId().toString())
-				  .claim("name", String.format("%s %s",user.getFirstName(),user.getLastName()))
-				  .claim("email",user.getUsername())
-				  .expiration(generateExpDate())
-				  .signWith(getSigningKey(),Jwts.SIG.HS256)
-				  .compact();
-		 
-		 return jwt;
-		 
+				.claim("name", String.format("%s %s", user.getFirstName(), user.getLastName()))
+				.claim("email", user.getUsername())
+				.expiration(generateExpDate())
+				.issuedAt(Date.from(Instant.now()))
+				.signWith(getSigningKey(), Jwts.SIG.HS256).compact();
+
+		return jwt;
+
 	}
-	
+
 	private Date generateExpDate() {
-	  Instant exp = LocalDateTime.now().plusHours(1).toInstant(ZoneOffset.of("Z"));
-		
+		Instant exp = LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("Z"));
+
 		return Date.from(exp);
 	}
-	
+
 }

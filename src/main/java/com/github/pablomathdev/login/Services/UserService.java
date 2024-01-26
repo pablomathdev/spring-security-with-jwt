@@ -27,7 +27,7 @@ public class UserService implements UserDetailsService {
 		this.passwordEncoder = passwordEncoder;
 	}
 
-	public Boolean createUser(User user) {
+	public void createUser(User user) {
 		
 	  String encryptedPassword = passwordEncoder.encode(user.getPassword());
 		
@@ -35,7 +35,6 @@ public class UserService implements UserDetailsService {
 	   user.addRole(roleRepository.findById(2L).get());
 	   repository.save(user);
 		
-	   return true;
 	}
 
 	@Override
