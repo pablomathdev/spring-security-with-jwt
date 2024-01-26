@@ -32,6 +32,7 @@ public class WebSecurityConfig {
 		http.csrf(csrf -> csrf.disable())
 		.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 		.authorizeHttpRequests(authorize -> authorize
+				.requestMatchers(HttpMethod.PUT,"/user/{id}").authenticated()
 				.requestMatchers(HttpMethod.POST,"/auth/signin").permitAll()
 				.requestMatchers(HttpMethod.POST,"/auth/signup").permitAll()
 				.requestMatchers("/h2-console/**").permitAll())

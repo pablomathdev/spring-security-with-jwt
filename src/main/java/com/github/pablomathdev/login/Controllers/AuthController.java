@@ -31,7 +31,9 @@ public class AuthController {
 
 	private UserService userService;
 
-	public AuthController(@Autowired AuthUserService authUserService, @Autowired UserRepository userRepository,
+	public AuthController(
+			
+			@Autowired AuthUserService authUserService, @Autowired UserRepository userRepository,
 			@Autowired UserSignInMapper userSignInMapper, @Autowired UserSignUpMapper userSignUpMapper,
 			@Autowired UserService userService) {
 		this.authUserService = authUserService;
@@ -54,15 +56,14 @@ public class AuthController {
 
 	@PostMapping("/signup")
 	public ResponseEntity<?> signUp(@RequestBody UserSignUpDTO user) {
-		
-			userRepository.alreadyExists(user.getEmail());
 
-			User dtoToUser = userSignUpMapper.userToUserSignUpDto(user);
+		userRepository.alreadyExists(user.getEmail());
 
-			userService.createUser(dtoToUser);
+		User dtoToUser = userSignUpMapper.userToUserSignUpDto(user);
 
-			return ResponseEntity.ok().build();
+		userService.createUser(dtoToUser);
 
-		
+		return ResponseEntity.ok().build();
+
 	}
 }

@@ -40,7 +40,8 @@ public class SecurityFilter extends OncePerRequestFilter {
 		
 		if(token != null) {
 			var subject = jwtService.validateToken(token);
-			UserDetails user = userRepository.findByUsername(subject);
+			
+			UserDetails user = userRepository.findById(Long.valueOf(subject)).get();
 			
 			
 			

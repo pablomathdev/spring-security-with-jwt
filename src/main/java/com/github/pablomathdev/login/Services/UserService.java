@@ -8,31 +8,33 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.github.pablomathdev.login.Domain.Entities.User;
+import com.github.pablomathdev.login.infra.Repositories.RoleRepository;
 import com.github.pablomathdev.login.infra.Repositories.UserRepository;
 
 @Service
 public class UserService implements UserDetailsService {
 
+	private RoleRepository roleRepository;
 	private UserRepository repository;
-	
 	private BCryptPasswordEncoder passwordEncoder;
 
 	public UserService(
+			@Autowired RoleRepository roleRepository,
 			@Autowired UserRepository repository,
 			@Autowired BCryptPasswordEncoder passwordEncoder) {
+		this.roleRepository = roleRepository;
 		this.repository = repository;
 		this.passwordEncoder = passwordEncoder;
 	}
 
-	public Boolean createUser(User user) {
+	public void createUser(User user) {
 		
 	  String encryptedPassword = passwordEncoder.encode(user.getPassword());
 		
-	   user.setPassword(encryptedPassword);
-	   
+	   user.setPassword(encryptedPassword); 
+	   user.addRole(roleRepository.findById(2L).get());
 	   repository.save(user);
 		
-	   return true;
 	}
 
 	@Override
