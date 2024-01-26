@@ -1,8 +1,7 @@
 package com.github.pablomathdev.login.Services;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
 import javax.crypto.SecretKey;
@@ -60,9 +59,8 @@ public class JwtService {
 	}
 
 	private Date generateExpDate() {
-		Instant exp = LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("Z"));
-
-		return Date.from(exp);
+		 Instant exp = Instant.now().plus(2, ChronoUnit.HOURS);
+	        return Date.from(exp);
 	}
 
 }
