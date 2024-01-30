@@ -21,5 +21,5 @@ public interface UserSignUpMapper {
 	@Mapping(target = "phone",ignore = true)
 	@Mapping(target = "authorities",ignore = true)
 	@Mapping(target = "rg",ignore = true)
-	User userToUserSignUpDto(UserSignUpDTO user);
+	User userSignUpDtoToUser(UserSignUpDTO user);
 }

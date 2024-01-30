@@ -24,7 +24,7 @@ public interface UserSignInMapper {
 	@Mapping(target = "roles",ignore = true)
 	@Mapping(target = "authorities",ignore = true)
 	@Mapping(target = "id",ignore = true)
-	User userToUserSignInDto(UserSignInDTO user);
+	User userSignInDtoToUser(UserSignInDTO user);
 }
 
 
