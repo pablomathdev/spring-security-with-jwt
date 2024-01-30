@@ -46,7 +46,7 @@ public class AuthController {
 	@PostMapping("/signin")
 	public ResponseTokenDTO signIn(@RequestBody UserSignInDTO userSignInDTO) {
 
-		User dtoToUser = userSignInMapper.userToUserSignInDto(userSignInDTO);
+		User dtoToUser = userSignInMapper.userSignInDtoToUser(userSignInDTO);
 
 		String token = authUserService.authenticateUser(dtoToUser);
 
@@ -59,7 +59,7 @@ public class AuthController {
 
 		userRepository.alreadyExists(user.getEmail());
 
-		User dtoToUser = userSignUpMapper.userToUserSignUpDto(user);
+		User dtoToUser = userSignUpMapper.userSignUpDtoToUser(user);
 
 		userService.createUser(dtoToUser);
 
