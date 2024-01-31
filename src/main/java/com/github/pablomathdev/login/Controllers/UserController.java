@@ -1,6 +1,7 @@
 package com.github.pablomathdev.login.Controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,8 +35,8 @@ public class UserController {
 
 
 	@PutMapping("/{id}")
-	public User edit(@PathVariable Long id,@RequestBody UserEditDTO data) {
-		
+	public ResponseEntity<?> edit(@PathVariable Long id,@RequestBody UserEditDTO data) {
+	
 	 Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		
 	 User getUserAuthContext = (User) authentication.getPrincipal();
@@ -44,7 +45,7 @@ public class UserController {
 	 
 	  userUpdateMapper.updateUserFromUserEditDTO(data, findUser);
 	   
-	  return userRepository.save(findUser);
+	   return ResponseEntity.ok(userRepository.save(findUser));
 	  
 	  
 	   

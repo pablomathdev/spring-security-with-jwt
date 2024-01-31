@@ -3,6 +3,7 @@ package com.github.pablomathdev.login.infra.SecurityConfig;
 import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,13 +22,11 @@ import jakarta.servlet.http.HttpServletResponse;
 public class SecurityFilter extends OncePerRequestFilter {
 
 	private JwtService jwtService;
-	
+
 	private UserRepository userRepository;
 
-	public SecurityFilter(
-			@Autowired JwtService jwtService,
-			@Autowired UserRepository userRepository) {
-		super();
+	public SecurityFilter(@Autowired JwtService jwtService, @Autowired UserRepository userRepository) {
+
 		this.jwtService = jwtService;
 		this.userRepository = userRepository;
 	}
@@ -35,23 +34,27 @@ public class SecurityFilter extends OncePerRequestFilter {
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
-	
-		var token = this.recoveryToken(request);
-		
-		if(token != null) {
-			var subject = jwtService.validateToken(token);
+		try {
+			var token = this.recoveryToken(request);
+
+			if (token != null) {
+				String subject = jwtService.validateToken(token);
+
+				UserDetails user = userRepository.findById(Long.valueOf(subject)).get();
+
+				var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+
+				SecurityContextHolder.getContext().setAuthentication(authentication);
+			}
+
+			filterChain.doFilter(request, response);
+		} catch (Exception e) {
 			
-			UserDetails user = userRepository.findById(Long.valueOf(subject)).get();
-			
-			
-			
-			var authentication = new UsernamePasswordAuthenticationToken(user,null,user.getAuthorities());
-			
-			SecurityContextHolder.getContext().setAuthentication(authentication);
+			response.setStatus(HttpStatus.UNAUTHORIZED.value());
+			response.setCharacterEncoding("UTF-8");
+			response.getWriter().println(e.getMessage());
 		}
-		
-		filterChain.doFilter(request, response);
-		
+
 	}
 
 	private String recoveryToken(HttpServletRequest request) {

@@ -11,9 +11,12 @@ import org.springframework.security.oauth2.jwt.JwtValidationException;
 import org.springframework.stereotype.Service;
 
 import com.github.pablomathdev.login.Domain.Entities.User;
+import com.github.pablomathdev.login.Exceptions.JwtSignatureException;
 
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 
 @Service
 public class JwtService {
@@ -38,8 +41,8 @@ public class JwtService {
 
 			
 			
-		} catch (JwtValidationException e) {
-			return "";
+		} catch (JwtException e) {
+			throw new SignatureException(e.getMessage());
 		}
 
 	}

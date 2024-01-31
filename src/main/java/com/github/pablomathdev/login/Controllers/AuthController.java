@@ -33,8 +33,10 @@ public class AuthController {
 
 	public AuthController(
 			
-			@Autowired AuthUserService authUserService, @Autowired UserRepository userRepository,
-			@Autowired UserSignInMapper userSignInMapper, @Autowired UserSignUpMapper userSignUpMapper,
+			@Autowired AuthUserService authUserService,
+			@Autowired UserRepository userRepository,
+			@Autowired UserSignInMapper userSignInMapper,
+			@Autowired UserSignUpMapper userSignUpMapper,
 			@Autowired UserService userService) {
 		this.authUserService = authUserService;
 		this.userRepository = userRepository;
