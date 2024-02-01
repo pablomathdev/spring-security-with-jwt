@@ -50,7 +50,7 @@ public class ExceptionHandlerController extends ResponseEntityExceptionHandler{
 		
 	}
 	
-	@ExceptionHandler(SignatureException.class)
+	@ExceptionHandler(JwtException.class)
 	public ResponseEntity<Object> handleSignatureTokenException(JwtException ex,WebRequest request) {
 		
 		ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, ex.getMessage());

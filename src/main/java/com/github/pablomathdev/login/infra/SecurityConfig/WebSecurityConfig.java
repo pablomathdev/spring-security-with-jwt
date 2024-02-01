@@ -37,7 +37,8 @@ public class WebSecurityConfig {
 				.requestMatchers(HttpMethod.POST,"/auth/signup").permitAll()
 				.requestMatchers("/h2-console/**").permitAll())
 			    .headers(headers -> headers.frameOptions(frameOptionsConfig -> frameOptionsConfig.sameOrigin()))
-			    .addFilterBefore(securityFilter,UsernamePasswordAuthenticationFilter.class);       
+			    
+			    .addFilterBefore(securityFilter,UsernamePasswordAuthenticationFilter.class);
 		return http.build();
 	}
 	
