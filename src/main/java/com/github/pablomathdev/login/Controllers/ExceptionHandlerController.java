@@ -12,11 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import com.github.pablomathdev.login.Exceptions.JwtSignatureException;
 import com.github.pablomathdev.login.Exceptions.UserAlreadyExistsException;
-
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.security.SignatureException;
 
 @RestControllerAdvice
 public class ExceptionHandlerController extends ResponseEntityExceptionHandler{
@@ -50,16 +46,4 @@ public class ExceptionHandlerController extends ResponseEntityExceptionHandler{
 		
 	}
 	
-	@ExceptionHandler(JwtException.class)
-	public ResponseEntity<Object> handleSignatureTokenException(JwtException ex,WebRequest request) {
-		
-		ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, ex.getMessage());
-		problemDetail.setStatus(HttpStatus.UNAUTHORIZED.value());
-		problemDetail.setDetail(ex.getMessage());
-		problemDetail.setProperty("timestamp", OffsetDateTime.now());
-		problemDetail.setProperty("message", "Token signature is invalid.");
-		
-		
-		return new ResponseEntity<>(problemDetail,new HttpHeaders(),HttpStatus.UNAUTHORIZED);
-	}
 }

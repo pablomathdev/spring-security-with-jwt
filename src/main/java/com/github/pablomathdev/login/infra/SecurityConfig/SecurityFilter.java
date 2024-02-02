@@ -1,15 +1,14 @@
 package com.github.pablomathdev.login.infra.SecurityConfig;
 
 import java.io.IOException;
-import java.text.DateFormat;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.time.OffsetDateTime;
-import java.time.format.DateTimeFormatter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ProblemDetail;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -56,18 +55,28 @@ public class SecurityFilter extends OncePerRequestFilter {
 
 				SecurityContextHolder.getContext().setAuthentication(authentication);
 			}
+			
+			
 
 			filterChain.doFilter(request, response);
 		} catch (JwtException ex) {
 			
-			ResponseEntity<Object> responseEntity = handleJwtException(ex);
+			ProblemDetail problemDetail = null;
+			try {
+				problemDetail = responseJwtException(ex,request);
+			} catch (URISyntaxException e) {
+				e.printStackTrace();
+			}
 	        response.setStatus(HttpStatus.UNAUTHORIZED.value());
 	        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 	        
 	        ObjectMapper objectMapper = new ObjectMapper();
 	        objectMapper.registerModule(new JavaTimeModule());
 	        
-	        response.getWriter().write(objectMapper.writeValueAsString(responseEntity.getBody()));
+	        objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+	        objectMapper.configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
+	        
+	        response.getWriter().write(objectMapper.writeValueAsString(problemDetail));
 	        response.getWriter().flush();
 	        response.getWriter().close();
 		}
@@ -84,14 +93,16 @@ public class SecurityFilter extends OncePerRequestFilter {
 		return authHeader.replace("Bearer", "");
 	}
 	
-	private ResponseEntity<Object> handleJwtException(JwtException ex) {
-	    ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, ex.getMessage());
-	    problemDetail.setStatus(HttpStatus.UNAUTHORIZED.value());
-	    problemDetail.setDetail(ex.getMessage());
-//	    problemDetail.setProperty("timestamp", OffsetDateTime.now());
-	    problemDetail.setProperty("message", "Token validation failed.");
+	private ProblemDetail responseJwtException(JwtException ex,HttpServletRequest request) throws URISyntaxException {
+		ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, ex.getMessage());
+		problemDetail.setStatus(HttpStatus.UNAUTHORIZED.value());
+		problemDetail.setDetail(ex.getMessage());
+		problemDetail.setProperty("timestamp", OffsetDateTime.now());
+		URI uri = new URI(request.getRequestURI());
+		problemDetail.setInstance(uri);
+		problemDetail.setProperty("message", "Token signature is invalid.");
 
-	    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(problemDetail);
+	   return problemDetail;
 	}
 
 }
