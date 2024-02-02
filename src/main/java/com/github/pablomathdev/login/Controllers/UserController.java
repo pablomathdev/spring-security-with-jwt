@@ -38,6 +38,7 @@ public class UserController {
 	public ResponseEntity<?> edit(@PathVariable Long id,@RequestBody UserEditDTO data) {
 	
 	 Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	 
 		
 	 User getUserAuthContext = (User) authentication.getPrincipal();
 	
