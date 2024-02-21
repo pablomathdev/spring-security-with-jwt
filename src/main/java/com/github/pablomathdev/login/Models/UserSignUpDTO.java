@@ -6,6 +6,8 @@ import com.github.pablomathdev.login.Domain.Entities.Role;
 
 public class UserSignUpDTO {
 	
+	private String cpf;
+	
 	private String firstName;
 	
 	private String lastName;
@@ -54,6 +56,14 @@ public class UserSignUpDTO {
 
 	public void setFirstName(String firstName) {
 		this.firstName = firstName;
+	}
+
+	public String getCpf() {
+		return cpf;
+	}
+
+	public void setCpf(String cpf) {
+		this.cpf = cpf;
 	}
 
 	

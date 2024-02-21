@@ -17,7 +17,7 @@ public interface UserSignUpMapper {
 	@Mapping(source = "lastName",target = "lastName")
 	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "birthDate",ignore = true)
-	@Mapping(target = "cpf",ignore = true)
+	@Mapping(source= "cpf",target = "cpf")
 	@Mapping(target = "phone",ignore = true)
 	@Mapping(target = "authorities",ignore = true)
 	@Mapping(target = "rg",ignore = true)

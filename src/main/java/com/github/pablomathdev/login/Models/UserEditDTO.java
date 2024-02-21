@@ -3,6 +3,8 @@ package com.github.pablomathdev.login.Models;
 import java.time.LocalDate;
 
 public class UserEditDTO {
+	
+	private String email;
 
 	private String firstName;
 
@@ -43,6 +45,14 @@ public class UserEditDTO {
 
 	public void setBirthDate(LocalDate birthDate) {
 		this.birthDate = birthDate;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 }

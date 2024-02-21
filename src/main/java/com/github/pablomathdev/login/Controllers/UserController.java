@@ -46,7 +46,9 @@ public class UserController {
 	 
 	  userUpdateMapper.updateUserFromUserEditDTO(data, findUser);
 	   
-	   return ResponseEntity.ok(userRepository.save(findUser));
+	  userRepository.save(findUser);
+	  
+	   return ResponseEntity.ok().build();
 	  
 	  
 	   

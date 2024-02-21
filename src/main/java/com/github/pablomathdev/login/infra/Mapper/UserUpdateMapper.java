@@ -17,7 +17,7 @@ public interface UserUpdateMapper {
 	@Mapping(target = "password", ignore = true)
 	@Mapping(target = "rg", ignore = true)
 	@Mapping(target = "roles", ignore = true)
-	@Mapping(target = "username", ignore = true)
+	@Mapping(source = "email", target = "username")
 	@Mapping(target = "authorities", ignore = true)
 	void updateUserFromUserEditDTO(UserEditDTO userEditDTO, @MappingTarget User user);
 
