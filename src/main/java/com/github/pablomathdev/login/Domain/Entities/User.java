@@ -18,6 +18,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -28,6 +29,7 @@ public class User implements UserDetails {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "user_id")
 	private Long id;
 
 	@Column(unique = true)
@@ -43,9 +45,8 @@ public class User implements UserDetails {
 	
 	private String username;
 
-	public void setUsername(String username) {
-		this.username = username;
-	}
+	@OneToOne(mappedBy = "user")
+    private PasswordResetToken passwordResetToken;
 
 	private String phone;
 
@@ -66,6 +67,9 @@ public class User implements UserDetails {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 	public String getFirstName() {

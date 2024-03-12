@@ -2,10 +2,11 @@ package com.github.pablomathdev.login.Services;
 
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import com.github.pablomathdev.login.Domain.Entities.User;
 
-@Component
+@Service
 public class EmailService {
 
 	
