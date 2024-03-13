@@ -22,6 +22,8 @@ import com.github.pablomathdev.login.Services.UserService;
 import com.github.pablomathdev.login.infra.Mapper.UserUpdateMapper;
 import com.github.pablomathdev.login.infra.Repositories.UserRepository;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 @RestController
 @RequestMapping("user")
 public class UserController {
@@ -61,10 +63,11 @@ public class UserController {
 	}
 
 	@PostMapping("/resetPassword")
-	public ResponseEntity<?> resetPassword(@RequestBody EmailDTO email) {
-
+	public ResponseEntity<?> resetPassword(@RequestBody EmailDTO email, HttpServletRequest request) {
+		
+		
 		User user = userRepository.findByUsername(email.getEmail());
-        System.out.println(email);
+      
 		
 		if (user == null) {
 			
@@ -75,9 +78,9 @@ public class UserController {
 
 		userService.createPasswordResetTokenForUser(user, token);
 		
-		mailSender.send(emailService.createResetPasswordEmail(email.getEmail(), token, user));
-		
+		mailSender.send(emailService.createResetPasswordEmail( token, user));
 
+		
 		return ResponseEntity.ok().build();
 	  	
 	}
