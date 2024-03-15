@@ -1,10 +1,17 @@
 package com.github.pablomathdev.login.Services;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
 import com.github.pablomathdev.login.Domain.Entities.User;
+
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 
 @Service
 public class EmailService {
@@ -12,26 +19,33 @@ public class EmailService {
 	@Value("${base.url}")
 	private String baseUrl;
 
-	public SimpleMailMessage createResetPasswordEmail(String token, User user) {
+	@Autowired
+	private TemplateEngine templateEngine;
 
-		String url = baseUrl + "/user/changePassword?token=" + token;
+	@Autowired
+	private JavaMailSenderImpl mailSender;
 
-		String text = "Para redefinir sua senha, clique no link abaixo:" + "\r\n" + url;
+	public void createResetPasswordEmail(User user, String token) throws MessagingException {
 
-		return createEmail(user, "Reset Password", text);
+		MimeMessage mimeMessage = mailSender.createMimeMessage();
+		MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "UTF-8");
 
-	}
+		String body = "Para redefinir sua senha, clique no link abaixo:";
 
-	private SimpleMailMessage createEmail(User user, String subject, String text) {
+		String linkResetPassword = baseUrl + "/user/changePassword?token=" + token;
 
-		SimpleMailMessage email = new SimpleMailMessage();
+		Context context = new Context();
+		context.setVariable("message", body);
+		context.setVariable("link", linkResetPassword);
 
-		email.setFrom("noreply@springlogin.com");
-		email.setTo(user.getUsername());
-		email.setSubject(subject);
-		email.setText(text);
+		String htmlContent = templateEngine.process("resetPasswordEmailTemplate", context);
 
-		return email;
+		helper.setTo(user.getUsername());
+		helper.setFrom("noreply@springlogin.com");
+		helper.setSubject("Redefinição de Senha");
+		helper.setText(htmlContent, true);
+
+		mailSender.send(mimeMessage);
 
 	}
 }

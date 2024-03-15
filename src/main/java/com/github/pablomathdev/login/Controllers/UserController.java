@@ -4,7 +4,6 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,6 +21,7 @@ import com.github.pablomathdev.login.Services.UserService;
 import com.github.pablomathdev.login.infra.Mapper.UserUpdateMapper;
 import com.github.pablomathdev.login.infra.Repositories.UserRepository;
 
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
@@ -34,8 +34,6 @@ public class UserController {
 	@Autowired
 	private UserRepository userRepository;
 
-	@Autowired
-	private JavaMailSenderImpl mailSender;
 
 	@Autowired
 	private EmailService emailService;
@@ -63,7 +61,7 @@ public class UserController {
 	}
 
 	@PostMapping("/resetPassword")
-	public ResponseEntity<?> resetPassword(@RequestBody EmailDTO email, HttpServletRequest request) {
+	public ResponseEntity<?> resetPassword(@RequestBody EmailDTO email, HttpServletRequest request) throws MessagingException {
 		
 		
 		User user = userRepository.findByUsername(email.getEmail());
@@ -78,7 +76,7 @@ public class UserController {
 
 		userService.createPasswordResetTokenForUser(user, token);
 		
-		mailSender.send(emailService.createResetPasswordEmail( token, user));
+		emailService.createResetPasswordEmail(user,token);
 
 		
 		return ResponseEntity.ok().build();
